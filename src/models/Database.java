@@ -33,10 +33,10 @@ public class Database {
      */
     private Connection dbConnection() throws SQLException {
         // https://stackoverflow.com/questions/13891006/
-        if(connection != null) {
-            connection.close();
+        if(connection != null) { // kontrollib kas on varasem ühendus aktiivne
+            connection.close(); // kui jah siis sulgeb ühenduse
         }
-        connection = DriverManager.getConnection(databaseUrl);
+        connection = DriverManager.getConnection(databaseUrl); // loob ühenduse, DriverMan valib õige draiveri
         return connection;
     }
 
@@ -44,16 +44,18 @@ public class Database {
      * The method reads unique category names from the database and writes them to the cmbNames variable of the model.
      */
     public void selectUniqueCategories() {
-        String sql = "SELECT DISTINCT(category) as category FROM words ORDER BY category";
+        // sql päring muutujasse
+        String sql = "SELECT DISTINCT(category) as category FROM words ORDER BY category"; // päring võtab unikaalsed read
+        // list muutuja katekoorijatele
         List<String> categories = new ArrayList<>();
         try {
-            Connection conn = this.dbConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            Connection conn = this.dbConnection(); // kutsub meetodi, tagastub ühendus
+            Statement stmt = conn.createStatement(); // loob Statement obj, saadab sql lause DB
+            ResultSet rs = stmt.executeQuery(sql); // viib täide sql lause, tagastab tulemuse objektina- andmetabeli
 
-            while(rs.next()) {
-                String category = rs.getString("category");
-                categories.add(category);
+            while(rs.next()) { // käib läbi tabeli
+                String category = rs.getString("category"); // võtab rea
+                categories.add(category); // kirjutab stringi massiivi
             }
             model.setCorrectCmbNames(categories); // writes unique categories to the cmbNames variable of the model
         } catch (SQLException e) {

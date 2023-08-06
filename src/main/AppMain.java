@@ -16,6 +16,8 @@ public class AppMain {
      */
     private static void start() {
         Model model = new Model(); // Create Model
+        // model väärtustab hunniku andmeid, käivitab Database konstruktori, kus luuakse DB ühendus,
+        // päritakse unikaalsed kategooriate nimetused, kutsutakse modeli meetod mis loeb kategooriad array
         // Creates the main window and all the necessary panels after that with the labels and text fields of the
         // buttons there
         View view = new View(model);

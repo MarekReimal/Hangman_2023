@@ -18,7 +18,7 @@ public class Model {
     private final String databaseFile = "hangman_words_ee_test.db"; // Default database
     private final String imagesFolder = "images"; // Hangman game images location
     private List<String> imageFiles = new ArrayList<>(); // All images with full folder path
-    private String[] cmbNames; // ComboBox categories names (contents)
+    private String[] cmbNames; // Array muutuja ComboBox categories names (contents)
     private final String chooseCategory = "All categories"; // Default first ComboBox choice
     private DefaultTableModel dtmScores; // Leaderboard DefaultTableModel
     private List<DataScores> dataScores = new ArrayList<>(); // The contents of the entire database table scores
@@ -35,13 +35,15 @@ public class Model {
     /**
      * Sets the content to match the ComboBox. Adds "All categories" and unique categories obtained from the database.
      * @param unique all unique categories from database
+     * meetod kutsutakse välja Database classist, sisendiks DB päringust saadud unikaalsed kategooriad.
+     * meetod kirjutab unikaalsed kategooriate nimetused array
      */
     public void setCorrectCmbNames(List<String> unique) {
-        cmbNames = new String[unique.size()+1];
-        cmbNames[0] = chooseCategory; // First choice before categories
+        cmbNames = new String[unique.size()+1]; // cmbNames on array, new loob array String type ja kindla suurusega
+        cmbNames[0] = chooseCategory; // array esimene rida on "All categories"
         int x = 1;
         for(String category : unique) {
-            cmbNames[x] = category;
+            cmbNames[x] = category; // kirjutab kategooria nimetused massiivi
             x++;
         }
     }

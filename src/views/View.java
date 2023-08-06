@@ -53,11 +53,11 @@ public class View extends JFrame {
      * Creates panels and the objects needed for them on the main window
      */
     private void setupPanels() {
-        gameBoard = new GameBoard(model); // Creates a top panel
-        gameResult = new GameResult(); // Creates a bottom panel
+        gameBoard = new GameBoard(model); // Loob ülemise paneeli
+        gameResult = new GameResult(); // Loob alumise paneeli
 
-        this.add(gameBoard, BorderLayout.NORTH); // Places the panel according to BorderLayout
-        this.add(gameResult, BorderLayout.CENTER); // Places the panel according to BorderLayout
+        this.add(gameBoard, BorderLayout.NORTH); // Asetab ülemise paneeli vastavalt BorderLayout
+        this.add(gameResult, BorderLayout.CENTER); // Asetab alumise paneeli vastavalt BorderLayout
     }
     // All methods register* in file Controller.java
     /**
@@ -72,8 +72,10 @@ public class View extends JFrame {
      * Take the New Game button from the game board and add an actionListener to the button
      * @param al actionListener
      */
-    public void registerButtonNew(ActionListener al) {
-        gameBoard.getBtnNew().addActionListener(al);
+    public void registerButtonNew(ActionListener al) { // al sees on actionperfomed ülekirjutatud so nupu actionhandler
+        gameBoard.getBtnNew().addActionListener(al); // gameBoard.getBtnNew() on paneelit tagastatud nupp
+                                                    // paneelilt võetud nupule ühendatakse külge kuulaja ja
+                                                    // kaasa actionhandler
     }
 
     /**
