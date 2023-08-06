@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Database {
     private Connection connection = null;
-    private final String databaseUrl;
+    private final String databaseUrl; // DB nimi on modelis
     private final Model model;
 
     /**
@@ -22,7 +22,7 @@ public class Database {
      */
     public Database(Model model) {
         this.model = model;
-        this.databaseUrl = "jdbc:sqlite:" + model.getDatabaseFile();
+        this.databaseUrl = "jdbc:sqlite:" + model.getDatabaseFile(); // võtab DB nime
         this.selectUniqueCategories(); // ComboBox needs categories from the table
     }
 
@@ -89,5 +89,25 @@ public class Database {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void selectRandomWord (String choosedCatecory) {
+        String rWord = new String("");
+        //ArrayList<String> rWord = new ArrayList<String>(); // muutuja juhuliku sõna jaoks
+        // päring: üks juhuslik sõna vastavalt kategooriale
+        String sql = "SELECT word FROM words WHERE category = ? ORDER BY random() limit 1";
+        try {
+            Connection conn = this.dbConnection();
+            PreparedStatement getWord = conn.prepareStatement(sql);
+            getWord.setString(1,choosedCatecory);
+            ResultSet rs = getWord.executeQuery();
+            rWord = rs.getString(1);
+            model.setRandomWord(rWord);
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 package controllers.listeners;
 
+import models.Database;
 import models.Model;
 import views.View;
 
@@ -39,5 +40,8 @@ public class ButtonNew implements ActionListener {
         }
         view.setNewImage(0);
         view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
+        //String ajut = model.getSelectedCategory();
+        new Database(model).selectRandomWord(model.getSelectedCategory());
+        System.out.println(model.getRandomWord());
     }
 }

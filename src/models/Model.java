@@ -25,6 +25,17 @@ public class Model {
     private int imageId = 0; // Current image id (0..11)
     private String selectedCategory = chooseCategory; // Default all categories as "All categories"
 
+    public String getRandomWord() {
+        return randomWord;
+    }
+
+    public void setRandomWord(String randomWord) {
+        this.randomWord = randomWord;
+    }
+
+    private String randomWord;
+
+
     /**
      * During the creation of the model, the names of the categories to be shown in the combobox are known
      */
@@ -151,4 +162,5 @@ public class Model {
     public void setSelectedCategory(String selectedCategory) {
         this.selectedCategory = selectedCategory;
     }
+
 }

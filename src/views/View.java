@@ -78,6 +78,10 @@ public class View extends JFrame {
                                                     // kaasa actionhandler
     }
 
+    public void registerButtonSend(ActionListener al){ // sisendiks ButtonSend obj koodiga mis täidetakse nupu vajutamisel
+        gameBoard.getBtnSend().addActionListener(al); // lingib vaormilt saadud nupu kuulaja ja vajutamisel täidetava koodiga
+    }
+
     /**
      * Take the game pause button from the game board and add an actionListener to the button
      * @param al actionListener
