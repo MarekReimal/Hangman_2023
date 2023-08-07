@@ -90,24 +90,24 @@ public class Database {
             throw new RuntimeException(e);
         }
     }
-
+     /**
+      * Meetod loeb DB-st juhusliku sõna, mida kasutaja hakkab arvama, vastavalt kasutaja valitud kategooriale
+      * sisendiks kasutaja valitud kategooria.
+      * väljund on String mis kirjutatakse modeli muutujasse
+     */
     public void selectRandomWord (String choosedCatecory) {
-        String rWord = new String("");
-        //ArrayList<String> rWord = new ArrayList<String>(); // muutuja juhuliku sõna jaoks
-        // päring: üks juhuslik sõna vastavalt kategooriale
+        // Päring: üks juhuslik sõna vastavalt kategooriale
         String sql = "SELECT word FROM words WHERE category = ? ORDER BY random() limit 1";
         try {
-            Connection conn = this.dbConnection();
-            PreparedStatement getWord = conn.prepareStatement(sql);
-            getWord.setString(1,choosedCatecory);
-            ResultSet rs = getWord.executeQuery();
-            rWord = rs.getString(1);
-            model.setRandomWord(rWord);
-
+            Connection conn = this.dbConnection(); // Loob DB ühenduse
+            PreparedStatement getWord = conn.prepareStatement(sql); // Prepeared päring, päring sisaldab muutuvat osa ?
+            getWord.setString(1,choosedCatecory); // Päringu muutuv osa saab väärtuseks valitud kategooria
+            ResultSet rs = getWord.executeQuery(); // ResultSet on nö tabel mis sisaldab päringu tulemust
+            String rWord = rs.getString(1); // Kuna päringu tulemuseks on 1 sõna, siis loop ei ole vaja
+            model.setRandomWord(rWord); // Kirjutab saadud juhusliku sõna modeli muutujasse
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

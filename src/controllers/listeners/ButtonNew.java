@@ -40,8 +40,12 @@ public class ButtonNew implements ActionListener {
         }
         view.setNewImage(0);
         view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
-        //String ajut = model.getSelectedCategory();
-        new Database(model).selectRandomWord(model.getSelectedCategory());
-        System.out.println(model.getRandomWord());
+        new Database(model).selectRandomWord(model.getSelectedCategory()); // new Database on kirjutatud et pääseda meedotidile ligi
+                                                // loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
+                                                // kaasa valitud kategooria
+        System.out.println(model.getRandomWord()); // Test, prindib juhusliku sõna terminali
+        model.convertRandomWordToArr(); // Teisendab juhusliku sõna array'ks
+        view.getLblResult().setText("P _ _ L");
+
     }
 }

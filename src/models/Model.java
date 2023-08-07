@@ -24,16 +24,9 @@ public class Model {
     private List<DataScores> dataScores = new ArrayList<>(); // The contents of the entire database table scores
     private int imageId = 0; // Current image id (0..11)
     private String selectedCategory = chooseCategory; // Default all categories as "All categories"
-
-    public String getRandomWord() {
-        return randomWord;
-    }
-
-    public void setRandomWord(String randomWord) {
-        this.randomWord = randomWord;
-    }
-
-    private String randomWord;
+    private String randomWord; // DB-st saadud juhuslik sõna mida kasutaja hakkab arvama
+    private char[] randomWordArr; // Juhuslik sõna teisendatud array
+    private char[] userRandomWord; // Juhuslik sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
 
 
     /**
@@ -161,6 +154,39 @@ public class Model {
      */
     public void setSelectedCategory(String selectedCategory) {
         this.selectedCategory = selectedCategory;
+    }
+
+    /**
+     * Meetod väljastab juhusliku sõna
+     * @return
+     */
+    public String getRandomWord() {
+        return randomWord;
+    }
+
+    /**
+     * Meetod kirjutab muutujasse ära arvamiseks juhusliku sõna
+     * @param randomWord
+     */
+    public void setRandomWord(String randomWord) {
+        this.randomWord = randomWord;
+    }
+    public void convertRandomWordToArr() {
+        randomWordArr = this.randomWord.toCharArray(); // Teisendab stringi char array'ks
+    }
+
+    public char[] getRandomWordArr() {
+        return randomWordArr;
+    }
+
+    public void replaceRandomWordWithUnderscores(){
+        int x=0;
+        char[] RandWordUnderscores = new char[this.randomWordArr.length];
+        for (char letter : this.randomWordArr) {
+
+            x++;
+
+            }
     }
 
 }
