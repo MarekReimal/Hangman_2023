@@ -25,7 +25,7 @@ public class Model {
     private int imageId = 0; // Current image id (0..11)
     private String selectedCategory = chooseCategory; // Default all categories as "All categories"
     private String randomWord; // DB-st saadud juhuslik sõna mida kasutaja hakkab arvama
-    private char[] randomWordArr; // Juhuslik sõna teisendatud array
+    private String[] randomWordArr; // Juhuslik sõna teisendatud array
     private char[] userRandomWord; // Juhuslik sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
 
 
@@ -165,29 +165,19 @@ public class Model {
     }
 
     /**
-     * Meetod kirjutab muutujasse ära arvamiseks juhusliku sõna
+     * Meetod salvestab muutujasse juhusliku sõna mida kasutaja hakkab arvama
      * @param randomWord
      */
     public void setRandomWord(String randomWord) {
         this.randomWord = randomWord;
-    }
-    public void convertRandomWordToArr() {
-        randomWordArr = this.randomWord.toCharArray(); // Teisendab stringi char array'ks
+        this.randomWordArr = randomWord.split(""); // Teisendab sõna String array'ks
     }
 
-    public char[] getRandomWordArr() {
+    public String[] getRandomWordArr() {
         return randomWordArr;
     }
 
-    public void replaceRandomWordWithUnderscores(){
-        int x=0;
-        char[] RandWordUnderscores = new char[this.randomWordArr.length];
-        for (char letter : this.randomWordArr) {
 
-            x++;
-
-            }
-    }
     /*
      sõna töötlemine ja arvepidamine toimub arrays
      GUI-le sõna välja kirjutamiseks eraldi meetod- lisab tühikud tähtede vahele JOIN

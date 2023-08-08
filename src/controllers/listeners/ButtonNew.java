@@ -40,13 +40,20 @@ public class ButtonNew implements ActionListener {
         }
         view.setNewImage(0);
         view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
-        new Database(model).selectRandomWord(model.getSelectedCategory()); // new Database on kirjutatud et pääseda meedotidile ligi
-                                                // loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
-                                                // kaasa valitud kategooria
-        // System.out.println(model.getRandomWord()); // Test, prindib juhusliku sõna terminali
-        String lettersReplaced = model.getRandomWord().replaceAll(".","_"); // Võtab sõna ja asendab kõik tähed alakriipsuga
-        String[] lettersReplacedArr = lettersReplaced.split(""); // https://www.baeldung.com/java-convert-string-to-string-array
-                                                     // teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
+
+        // new Database on kirjutatud et pääseda meedotidile ligi, loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
+        // kaasa valitud kategooria
+        new Database(model).selectRandomWord(model.getSelectedCategory());
+
+        System.out.println(model.getRandomWord()); // Test, prindib juhusliku sõna terminali
+
+        // Võtab sõna ja asendab kõik tähed alakriipsuga
+        String lettersReplaced = model.getRandomWord().replaceAll(".","_");
+
+        // https://www.baeldung.com/java-convert-string-to-string-array
+        // teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
+        String[] lettersReplacedArr = lettersReplaced.split("");
+
         String lettersReplacedSpacesAdded = String.join(" ",lettersReplacedArr); // Lisab tähtede vahele tühikud
 
         view.getLblResult().setText(lettersReplacedSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
