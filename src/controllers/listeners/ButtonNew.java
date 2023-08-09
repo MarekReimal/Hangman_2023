@@ -47,12 +47,14 @@ public class ButtonNew implements ActionListener {
 
         System.out.println(model.getRandomWord()); // Test, prindib juhusliku sõna terminali
 
+        // VALMISTAB ETTE KUVAMISEKS
         // Võtab sõna ja asendab kõik tähed alakriipsuga
         String lettersReplaced = model.getRandomWord().replaceAll(".","_");
 
         // https://www.baeldung.com/java-convert-string-to-string-array
         // teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
         String[] lettersReplacedArr = lettersReplaced.split("");
+
 
         String lettersReplacedSpacesAdded = String.join(" ",lettersReplacedArr); // Lisab tähtede vahele tühikud
 

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class ButtonSend implements ActionListener {
 
     private Model model;
@@ -22,10 +23,18 @@ public class ButtonSend implements ActionListener {
      * @param EventBtnSendPressed the event to be processed
      */
     public void actionPerformed(ActionEvent EventBtnSendPressed) {
-
-        String userChar = this.view.getTxtChar().getText().toUpperCase(); // Sisestatud täht võetakse . suureks täheks
+        //  võtab muutujasse kasutaja tähe vormilt ja vahetab trükitäheks
+        String userChar = this.view.getTxtChar().getText().toUpperCase();
         if (!userChar.trim().isEmpty()) { // võtab muutuja, lõikab tühikud, kui ei ole tühi siis ...
-            System.out.println(userChar); // Test
+
+            System.out.println(userChar); // Test prindi sisestatud täht terminali
+
+            String[] wordReadyToShow = model.getWordToShow(userChar); // võtab ettevalmistatud sõna mida kuvada graafikal, vajalik String[]
+            System.out.println("kas tagastus sõna mida näidata " + String.join("",wordReadyToShow)); // Test
+
+            // KUVAMISE OSA
+            String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
+            view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
 
         }
 

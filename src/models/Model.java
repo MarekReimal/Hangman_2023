@@ -26,7 +26,12 @@ public class Model {
     private String selectedCategory = chooseCategory; // Default all categories as "All categories"
     private String randomWord; // DB-st saadud juhuslik sõna mida kasutaja hakkab arvama
     private String[] randomWordArr; // Juhuslik sõna teisendatud array
-    private char[] userRandomWord; // Juhuslik sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
+    private String[] userWord; // Sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
+    private ArrayList<String> quessedCorrectChars = new ArrayList<String>(); // Arvatud õiged tähed
+    private ArrayList<String> quessedWrongChars = new ArrayList<String>(); // Arvatud tähed aga valed
+    private boolean missedOrNot = false; // kas valitud täht oli õige või vale
+
+
 
 
     /**
@@ -165,16 +170,62 @@ public class Model {
     }
 
     /**
-     * Meetod salvestab muutujasse juhusliku sõna mida kasutaja hakkab arvama
+     * Meetod salvestab model muutujasse juhusliku sõna mida kasutaja hakkab arvama
      * @param randomWord
      */
     public void setRandomWord(String randomWord) {
-        this.randomWord = randomWord;
-        this.randomWordArr = randomWord.split(""); // Teisendab sõna String array'ks
+        this.randomWord = randomWord.toUpperCase(); // Salvestab väärtuse
+        this.randomWordArr = randomWord.toUpperCase().split(""); // Salvestab väärtuse, teisendab sõna String[] {"a","b","c"}
+        String temp = randomWord.replaceAll(".","_"); // Asendab tähed _-ga, abi rida
+        this.userWord = temp.split(""); // Salvestab väärtuse [] kujul
     }
 
-    public String[] getRandomWordArr() {
-        return randomWordArr;
+
+    public String[] getWordToShow(String userChar) {
+        if(isChar(userChar)) { // kui täht esineb sõnas siis
+            System.out.println("täht on sõnas");
+            if(isInCorrectChars(userChar)){ // kui täht on õige ja juba arvatud siis
+                // suurenda vigade arvu ja vaheta pilt
+            }
+        } else { // kui tähte ei ole sõnas siis
+            this.quessedWrongChars.add(userChar); // salvestab arvatud vale tähe
+            // suurenda vigade arvu ja vaheta pilt
+
+        }
+        return this.userWord;
+    }
+
+    private boolean isChar(String userChar) {
+        // https://www.baeldung.com/java-array-contains-value
+        boolean isCh = false; // Init. muutuja
+        int x = 0; // Init. loendur
+
+        for (String s : this.randomWordArr) { // Loop s on üksikud tähed, võetakse radomW... massiivist
+            System.out.println("kõik tähed " + s); // Test
+            if(userChar.equals(s)) { // Kui kasutaja sisestatud täht võrdub sõnas oleva tähega siis
+                System.out.println("x väärtus on " + x); // Test
+                System.out.println("loobitud tähed " + s); // Test
+                this.userWord[x] = userChar; // Asendab _ sümboli kasutaja sisestatud tähega
+                isCh = true; // Täht oli sõnas olemas
+
+            }
+            x++; // loendur kasvab
+        }
+        System.out.println("käis isChar, näita userWord " + String.join("",this.userWord)); // Test
+        return isCh;
+    }
+    private boolean isInCorrectChars(String userChar){
+        boolean isCh = false;
+        for (String s : this.userWord) {
+            if (s.equals(userChar)){
+                isCh = true;
+            }
+        }
+        return isCh;
+    }
+    private boolean isInWrongChars(String userChar){
+        boolean isCh = false;
+        return isCh;
     }
 
 
