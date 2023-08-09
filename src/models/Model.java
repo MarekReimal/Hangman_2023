@@ -206,6 +206,7 @@ public class Model {
                 System.out.println("x väärtus on " + x); // Test
                 System.out.println("loobitud tähed " + s); // Test
                 this.userWord[x] = userChar; // Asendab _ sümboli kasutaja sisestatud tähega
+                // siia kontroll kas sõna on arvatud, kui jah siis meetod mis peatab aja
                 isCh = true; // Täht oli sõnas olemas
 
             }

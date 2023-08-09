@@ -23,7 +23,7 @@ public class ButtonSend implements ActionListener {
      * @param EventBtnSendPressed the event to be processed
      */
     public void actionPerformed(ActionEvent EventBtnSendPressed) {
-        //  võtab muutujasse kasutaja tähe vormilt ja vahetab trükitäheks
+        //  võtab kasutaja tähe vormilt ja vahetab trükitäheks
         String userChar = this.view.getTxtChar().getText().toUpperCase();
         if (!userChar.trim().isEmpty()) { // võtab muutuja, lõikab tühikud, kui ei ole tühi siis ...
 
@@ -35,6 +35,9 @@ public class ButtonSend implements ActionListener {
             // KUVAMISE OSA
             String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
             view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
+
+            //if(model.getRandomWord()==)  // Juhusliku sõna ja kasutaja sõna võrdlus, kas sõna on ära arvatud
+            // testi String[] võrdlemist ja ka saab lahti modelis ühest muutujast randomWord, jääks ainult Arr
 
         }
 
