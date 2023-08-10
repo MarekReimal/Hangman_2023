@@ -103,7 +103,7 @@ public class Database {
             PreparedStatement getWord = conn.prepareStatement(sql); // Prepeared päring, päring sisaldab muutuvat osa ?
             getWord.setString(1,choosedCatecory); // Päringu muutuv osa saab väärtuseks valitud kategooria
             ResultSet rs = getWord.executeQuery(); // ResultSet on nö tabel mis sisaldab päringu tulemust
-            String rWord = rs.getString(1); // Kuna päringu tulemuseks on 1 sõna, siis loop ei ole vaja
+            String rWord = rs.getString(1); // Päringu tulemuseks on 1 sõna, split vormindab []-ks
             model.setRandomWord(rWord); // Kirjutab saadud juhusliku sõna modeli muutujasse
 
         } catch (SQLException e) {

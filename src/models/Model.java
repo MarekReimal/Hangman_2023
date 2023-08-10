@@ -24,7 +24,6 @@ public class Model {
     private List<DataScores> dataScores = new ArrayList<>(); // The contents of the entire database table scores
     private int imageId = 0; // Current image id (0..11)
     private String selectedCategory = chooseCategory; // Default all categories as "All categories"
-    private String randomWord; // DB-st saadud juhuslik sõna mida kasutaja hakkab arvama
     private String[] randomWordArr; // Juhuslik sõna teisendatud array
     private String[] userWord; // Sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
     private ArrayList<String> quessedCorrectChars = new ArrayList<String>(); // Arvatud õiged tähed
@@ -161,21 +160,14 @@ public class Model {
         this.selectedCategory = selectedCategory;
     }
 
-    /**
-     * Meetod väljastab juhusliku sõna
-     * @return
-     */
-    public String getRandomWord() {
-        return randomWord;
-    }
 
     /**
      * Meetod salvestab model muutujasse juhusliku sõna mida kasutaja hakkab arvama
      * @param randomWord
      */
     public void setRandomWord(String randomWord) {
-        this.randomWord = randomWord.toUpperCase(); // Salvestab väärtuse
-        this.randomWordArr = randomWord.toUpperCase().split(""); // Salvestab väärtuse, teisendab sõna String[] {"a","b","c"}
+        String randW = randomWord.toUpperCase(); // Muudab trükitähtedeks
+        this.randomWordArr = randW.split(""); // Salvestab väärtuse [] kujul, teisendab sõna String[] {"a","b","c"}
         String temp = randomWord.replaceAll(".","_"); // Asendab tähed _-ga, abi rida
         this.userWord = temp.split(""); // Salvestab väärtuse [] kujul
     }
@@ -195,8 +187,11 @@ public class Model {
         return this.userWord;
     }
 
+
+    // https://stackoverflow.com/questions/8777257/equals-vs-arrays-equals-in-java
+    // https://www.baeldung.com/java-array-contains-value
     private boolean isChar(String userChar) {
-        // https://www.baeldung.com/java-array-contains-value
+
         boolean isCh = false; // Init. muutuja
         int x = 0; // Init. loendur
 
@@ -258,5 +253,23 @@ public class StringArrayExample {
 }
 
 https://www.tutorialspoint.com/fill-elements-in-a-java-char-array-in-a-specified-range
-erinevad näited stringi ja char[] jaoks
+erinevad näited stringi ja char[]
+
+
+
+public class Test {
+    public static void main(String[] args) {
+
+        String alg = ("sel");
+        String[] algArr = alg.split("");
+
+        String[] teineArr = {"s", "o", "l"};
+        boolean c = Arrays.equals(algArr, teineArr);
+        System.out.println(c);
+
+        List<String> kolmas = Arrays.asList(teineArr);
+        Collections.replaceAll(kolmas,?,"_");
+
+    }
+}
  */
