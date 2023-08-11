@@ -192,7 +192,7 @@ public class View extends JFrame {
      * @param id image id (0..11)
      */
     public void setNewImage(int id) {
-        ImageIcon imageIcon = new ImageIcon(model.getImageFiles().get(id));
+        ImageIcon imageIcon = new ImageIcon(model.getImageFiles().get(id)); // Joonistab pildi
         gameBoard.getGameImages().getLblImage().setIcon(imageIcon);
     }
 

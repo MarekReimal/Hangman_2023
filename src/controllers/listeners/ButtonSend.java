@@ -12,6 +12,7 @@ public class ButtonSend implements ActionListener {
 
     private Model model;
     private View view;
+    private int x = 0; // piltide loendur
 
     public ButtonSend(Model model, View view) {
         this.model = model;
@@ -31,6 +32,23 @@ public class ButtonSend implements ActionListener {
 
             String[] wordReadyToShow = model.getWordToShow(userChar); // võtab ettevalmistatud sõna mida kuvada graafikal, vajalik String[]
             System.out.println("kas tagastus sõna mida näidata " + String.join("",wordReadyToShow)); // Test
+
+            // Kontroll kas sõna on arvatud, kui jah, siis peatab aja jne
+            if (model.isWordQuessed()) {
+                view.showNewButton(); // Set access to buttons and text field
+                view.getGameTime().stopTimer(); // Stop gameTime
+                view.getGameTime().setRunning(false); // set game not running
+                view.getRealDateTime().start(); // Start real time again
+                model.setWordQuessed(false); // Taastab kontrolleri väärtuse, et saaks uut mängu käivitada
+            }
+
+            // Kontroll kas arvati õigesti või valesti
+            if (model.isMistakeQuess()) { // Kui on true st arvati valesti siis
+                view.setNewImage(this.x++);// vaheta pilt
+                model.setMistakeQuess(false);
+            }
+
+
 
             // KUVAMISE OSA
             String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud

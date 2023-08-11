@@ -4,6 +4,7 @@ import models.datastructures.DataScores;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,7 +29,8 @@ public class Model {
     private String[] userWord; // Sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
     private ArrayList<String> quessedCorrectChars = new ArrayList<String>(); // Arvatud õiged tähed
     private ArrayList<String> quessedWrongChars = new ArrayList<String>(); // Arvatud tähed aga valed
-    private boolean missedOrNot = false; // kas valitud täht oli õige või vale
+    private boolean mistakeQuess = false; // kas valitud täht oli õige või vale
+    private boolean wordQuessed = false; // kas sõna on ära arvatud
 
 
 
@@ -160,6 +162,15 @@ public class Model {
         this.selectedCategory = selectedCategory;
     }
 
+    /**
+     *
+     * @return
+     */
+    public String[] getRandomWordArr() {
+        return randomWordArr.clone(); // loob arrayst uue obj, et algne jääks muutmata ()
+        //https://stackoverflow.com/questions/55428172/how-to-prevent-changing-the-value-of-array-or-object
+    }
+
 
     /**
      * Meetod salvestab model muutujasse juhusliku sõna mida kasutaja hakkab arvama
@@ -171,23 +182,44 @@ public class Model {
         String temp = randomWord.replaceAll(".","_"); // Asendab tähed _-ga, abi rida
         this.userWord = temp.split(""); // Salvestab väärtuse [] kujul
     }
+    public boolean isWordQuessed() {
+        return wordQuessed;
+    }
+    public void setWordQuessed(boolean state) {
+        this.wordQuessed = state;
+    }
+    public boolean isMistakeQuess() {
+        return mistakeQuess;
+    }
+    public void setMistakeQuess(boolean state) {
+        this.mistakeQuess = state;
+    }
 
 
     public String[] getWordToShow(String userChar) {
-        if(isChar(userChar)) { // kui täht esineb sõnas siis
-            System.out.println("täht on sõnas");
-            if(isInCorrectChars(userChar)){ // kui täht on õige ja juba arvatud siis
+        if (!isInCorrectChars(userChar)) { // JÄTKA SIIT, VAJA ENNE KONTROLLIDA ÕIGETE VALEDE HULGAST, ENNE KUI USERWOED MUUDETAKSE
+        if(isChar(userChar)) { // Kontroll kas täht on sõnas, kutsub meetodi, kaasa kasutaja täht
+            System.out.println("täht on sõnas"); // Test
+            //if(isInCorrectChars(userChar)){ // Kui täht on õige ja juba arvatud siis
                 // suurenda vigade arvu ja vaheta pilt
+                //this.mistakeQuess = true;
             }
         } else { // kui tähte ei ole sõnas siis
             this.quessedWrongChars.add(userChar); // salvestab arvatud vale tähe
+            System.out.println("täht ei ole sõnas");
             // suurenda vigade arvu ja vaheta pilt
+            this.mistakeQuess = true;
 
         }
         return this.userWord;
     }
 
-
+    /**
+     * Meetod kontrollib kas täht on sõnas, õige tähe korral asendab _ õige tähega.
+     * Kontrollib kas sõna on lõpuni arvatud, kui jah siis muudab kontrolleri staatust true
+     * @param userChar On kasutaja sisestatud täht
+     * @return Tagastab bbblean kas täht oli või mitte
+     */
     // https://stackoverflow.com/questions/8777257/equals-vs-arrays-equals-in-java
     // https://www.baeldung.com/java-array-contains-value
     private boolean isChar(String userChar) {
@@ -196,21 +228,26 @@ public class Model {
         int x = 0; // Init. loendur
 
         for (String s : this.randomWordArr) { // Loop s on üksikud tähed, võetakse radomW... massiivist
-            System.out.println("kõik tähed " + s); // Test
+            //System.out.println("kõik tähed " + s); // Test
             if(userChar.equals(s)) { // Kui kasutaja sisestatud täht võrdub sõnas oleva tähega siis
-                System.out.println("x väärtus on " + x); // Test
-                System.out.println("loobitud tähed " + s); // Test
+                //System.out.println("x väärtus on " + x); // Test
+                //System.out.println("loobitud täht " + s); // Test
                 this.userWord[x] = userChar; // Asendab _ sümboli kasutaja sisestatud tähega
-                // siia kontroll kas sõna on arvatud, kui jah siis meetod mis peatab aja
+                // kontroll kas sõna on arvatud, kui array'd on võrdsed siis on arvatud
+                if (Arrays.equals(this.userWord, this.randomWordArr)) {
+                    this.wordQuessed = true;
+                    break;
+                }
                 isCh = true; // Täht oli sõnas olemas
-
             }
             x++; // loendur kasvab
         }
-        System.out.println("käis isChar, näita userWord " + String.join("",this.userWord)); // Test
+        //System.out.println("käis isChar, näita userWord " + String.join("",this.userWord)); // Test
         return isCh;
     }
+
     private boolean isInCorrectChars(String userChar){
+        System.out.println("näita userWord isInCorr meetodis " + Arrays.toString(this.userWord));
         boolean isCh = false;
         for (String s : this.userWord) {
             if (s.equals(userChar)){

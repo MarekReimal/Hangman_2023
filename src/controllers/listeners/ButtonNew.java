@@ -6,6 +6,9 @@ import views.View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ButtonNew implements ActionListener {
     private final Model model;
@@ -45,18 +48,23 @@ public class ButtonNew implements ActionListener {
         // kaasa valitud kategooria
         new Database(model).selectRandomWord(model.getSelectedCategory());
 
-        System.out.println(model.getRandomWord()); // Test, prindib juhusliku sõna terminali
+        System.out.println("new enne muutmist " + Arrays.toString(model.getRandomWordArr())); // Test, prindib juhusliku sõna terminali
 
         // VALMISTAB ETTE KUVAMISEKS
         // Võtab sõna ja asendab kõik tähed alakriipsuga
-        String lettersReplaced = model.getRandomWord().replaceAll(".","_");
+        //String lettersReplaced = model.getRandomWordArr()[];().replaceAll(".","_");
+        List<String> lettersReplaced = Arrays.asList(model.getRandomWordArr());
+        Collections.fill(lettersReplaced,"_");
+
+        System.out.println("new pärast muutmist " + Arrays.toString(model.getRandomWordArr())); // Test, prindib juhusliku sõna terminali
+
 
         // https://www.baeldung.com/java-convert-string-to-string-array
         // teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
-        String[] lettersReplacedArr = lettersReplaced.split("");
+        //String[] lettersReplacedArr = lettersReplaced.split("");
 
 
-        String lettersReplacedSpacesAdded = String.join(" ",lettersReplacedArr); // Lisab tähtede vahele tühikud
+        String lettersReplacedSpacesAdded = String.join(" ",lettersReplaced); // Lisab tähtede vahele tühikud
 
         view.getLblResult().setText(lettersReplacedSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
 
