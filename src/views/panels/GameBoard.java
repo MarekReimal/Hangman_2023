@@ -28,7 +28,7 @@ public class GameBoard extends JPanel {
     private JButton btnNew; // Button New Game
     private JButton btnScore; // Button Leaderboard
     private JButton btnCancel; // Button Cancel game
-    private JButton btnSend; // Button Send letter
+    private JButton btnSend; // Button Send charter
     private JComboBox<String> cmbCategory; // category ComboBox
 
     /**
@@ -142,6 +142,7 @@ public class GameBoard extends JPanel {
     public JLabel getLblTime() {
         return lblTime;
     }
+    public JLabel getLblError(){ return lblError;}
 
     /**
      * Let's take a button leaderboard

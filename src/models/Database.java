@@ -17,7 +17,8 @@ public class Database {
     private final Model model;
 
     /**
-     * A database constructor that is always invoked when an object is created.     *
+     * A database constructor that is always invoked when an object is created.
+     *
      * @param model Model
      */
     public Database(Model model) {
@@ -28,15 +29,20 @@ public class Database {
 
     /**
      * Database connection
+     *
      * @return Connection
      * @throws SQLException throws error on console.
      */
     private Connection dbConnection() throws SQLException {
+        System.out.println("tuli conn");
         // https://stackoverflow.com/questions/13891006/
-        if(connection != null) { // kontrollib kas on varasem ühendus aktiivne
-            connection.close(); // kui jah siis sulgeb ühenduse
+        if (connection != null) { // kontrollib kas on varasem ühendus aktiivne
+            System.out.println("conn != null");
+            System.out.println(connection.toString());
+            this.connection.close(); // kui jah siis sulgeb ühenduse
         }
         connection = DriverManager.getConnection(databaseUrl); // loob ühenduse, DriverMan valib õige draiveri
+        System.out.println("teeb conn");
         return connection;
     }
 
@@ -44,6 +50,7 @@ public class Database {
      * The method reads unique category names from the database and writes them to the cmbNames variable of the model.
      */
     public void selectUniqueCategories() {
+        System.out.println("teeb selectuniquecatecories");
         // sql päring muutujasse
         String sql = "SELECT DISTINCT(category) as category FROM words ORDER BY category"; // päring võtab unikaalsed read
         // list muutuja katekoorijatele
@@ -53,13 +60,20 @@ public class Database {
             Statement stmt = conn.createStatement(); // loob Statement obj, saadab sql lause DB
             ResultSet rs = stmt.executeQuery(sql); // viib täide sql lause, tagastab tulemuse objektina- andmetabeli
 
-            while(rs.next()) { // käib läbi tabeli
+            while (rs.next()) { // käib läbi tabeli
                 String category = rs.getString("category"); // võtab rea
                 categories.add(category); // kirjutab stringi massiivi
             }
             model.setCorrectCmbNames(categories); // writes unique categories to the cmbNames variable of the model
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                this.connection.close();
+                this.connection = null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -68,6 +82,7 @@ public class Database {
      * variable
      */
     public void selectScores() {
+        System.out.println("teeb selectScores");
         String sql = "SELECT * FROM scores ORDER BY gametime, playertime DESC, playername";
         List<DataScores> data = new ArrayList<>();
         try {
@@ -75,8 +90,9 @@ public class Database {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             model.getDataScores().clear();
-            while(rs.next()) {
+            while (rs.next()) {
                 String datetime = rs.getString("playertime");
+                System.out.println(datetime);
                 LocalDateTime playerTime = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 String playerName = rs.getString("playername");
                 String guessWord = rs.getString("guessword");
@@ -88,26 +104,69 @@ public class Database {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            try {
+                this.connection.close();
+                this.connection = null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-     /**
-      * Meetod loeb DB-st juhusliku sõna, mida kasutaja hakkab arvama, vastavalt kasutaja valitud kategooriale
-      * sisendiks kasutaja valitud kategooria.
-      * väljund on String mis kirjutatakse modeli muutujasse
+
+    /**
+     * Meetod loeb DB-st juhusliku sõna, mida kasutaja hakkab arvama, vastavalt kasutaja valitud kategooriale
+     * sisendiks kasutaja valitud kategooria.
+     * väljund on String mis kirjutatakse modeli muutujasse
      */
-    public void selectRandomWord (String choosedCatecory) {
+    public void selectRandomWord(String choosedCatecory) {
+        System.out.println("teeb selectRandomWord");
         // Päring: üks juhuslik sõna vastavalt kategooriale
         String sql = "SELECT word FROM words WHERE category = ? ORDER BY random() limit 1";
         try {
             Connection conn = this.dbConnection(); // Loob DB ühenduse
             PreparedStatement getWord = conn.prepareStatement(sql); // Prepeared päring, päring sisaldab muutuvat osa ?
-            getWord.setString(1,choosedCatecory); // Päringu muutuv osa saab väärtuseks valitud kategooria
+            getWord.setString(1, choosedCatecory); // Päringu muutuv osa saab väärtuseks valitud kategooria
             ResultSet rs = getWord.executeQuery(); // ResultSet on nö tabel mis sisaldab päringu tulemust
             String rWord = rs.getString(1); // Päringu tulemuseks on 1 sõna, split vormindab []-ks
             model.setRandomWord(rWord); // Kirjutab saadud juhusliku sõna modeli muutujasse
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                this.connection.close();
+                this.connection = null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Meetod kirjutab mängu tulemuse edetabelisse
+     */
+    // LocalDateTime gameTime, String playerName, String word, String missedLetters, int timeSeconds)
+    public void insertScores() {
+        String sql = "INSERT INTO scores (playertime, playername, guessword, wrongcharacters, gametime) VALUES (?,?,?,?,?)";
+        try {
+            Connection conn = this.dbConnection(); // Loob DB ühenduse
+            PreparedStatement stmt = conn.prepareStatement(sql); // Prepeared päring, päring sisaldab muutuvat osa ?
+            stmt.setString(1, model.getGameTime()); // Päringu muutuv osa saab väärtuseks valitud kategooria
+            stmt.setString(2, model.getPlayerName());
+            stmt.setString(3, model.getRandWord());
+            stmt.setString(4, model.getMissedLetters());
+            stmt.setInt(5, model.getTimeSeconds());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                this.connection.close();
+                this.connection = null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

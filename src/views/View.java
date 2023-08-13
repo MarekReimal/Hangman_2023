@@ -4,6 +4,7 @@ import helpers.GameTimer;
 import helpers.RealDateTime;
 import models.Model;
 import models.datastructures.DataScores;
+import views.panels.AskName;
 import views.panels.GameBoard;
 import views.panels.GameResult;
 
@@ -22,6 +23,7 @@ public class View extends JFrame {
     private GameResult gameResult; // Bottom panel
     private final RealDateTime realDateTime; // Real Date Time
     private final GameTimer gameTime; // Game time
+    private AskName askName; // Dialoogi aken küsib kasutaja nime
 
     /**
      * Main window JFrame
@@ -32,6 +34,7 @@ public class View extends JFrame {
 
         setupFrame(); // set the JFrame properties
         setupPanels(); // sets and places panels (two) on this frame (JFrame)
+
 
         realDateTime = new RealDateTime(this); // Create real time
         realDateTime.start(); // Start real time. This not good place for start!
@@ -203,4 +206,21 @@ public class View extends JFrame {
     public JTextField getTxtChar() {
         return gameBoard.getTxtChar();
     }
+
+    /**
+     * Ligipääs error labelile
+     * @return
+     */
+    public JLabel getLblError() {
+        return gameBoard.getLblError();
+    }
+
+    /**
+     * Meetod mis käivitab dialoogiakna mängija nime küsimiseks
+     */
+    public void askName() {
+        this.askName = new AskName(model);
+        askName.setVisible(true);
+    }
+
 }

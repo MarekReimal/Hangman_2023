@@ -16,8 +16,9 @@ public class ButtonNew implements ActionListener {
 
     /**
      * New Game button constructor.
-     * @param model Model
-     * @param view View
+     *
+     * @param model    Model
+     * @param view     View
      */
     public ButtonNew(Model model, View view) {
         this.model = model;
@@ -42,34 +43,27 @@ public class ButtonNew implements ActionListener {
             view.getGameTime().setRunning(false); // set game not running
         }
         view.setNewImage(0);
+        model.setImageId(0);
         view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
 
         // new Database on kirjutatud et pääseda meedotidile ligi, loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
-        // kaasa valitud kategooria
+        // Kaasa valitud kategooria
         new Database(model).selectRandomWord(model.getSelectedCategory());
 
-        System.out.println("new enne muutmist " + Arrays.toString(model.getRandomWordArr())); // Test, prindib juhusliku sõna terminali
-
         // VALMISTAB ETTE KUVAMISEKS
-        // Võtab sõna ja asendab kõik tähed alakriipsuga
-        //String lettersReplaced = model.getRandomWordArr()[];().replaceAll(".","_");
         List<String> lettersReplaced = Arrays.asList(model.getRandomWordArr());
-        Collections.fill(lettersReplaced,"_");
-
-        System.out.println("new pärast muutmist " + Arrays.toString(model.getRandomWordArr())); // Test, prindib juhusliku sõna terminali
-
-
-        // https://www.baeldung.com/java-convert-string-to-string-array
-        // teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
-        //String[] lettersReplacedArr = lettersReplaced.split("");
-
-
+        Collections.fill(lettersReplaced,"_"); // Võtab sõna ja asendab kõik tähed alakriipsuga
         String lettersReplacedSpacesAdded = String.join(" ",lettersReplaced); // Lisab tähtede vahele tühikud
-
         view.getLblResult().setText(lettersReplacedSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
 
-        // https://stackoverflow.com/questions/7318359/how-to-replace-all-characters-in-a-java-string-with-stars
 
 
     }
 }
+
+//String lettersReplaced = model.getRandomWordArr()[];().replaceAll(".","_");
+// https://stackoverflow.com/questions/7318359/how-to-replace-all-characters-in-a-java-string-with-stars
+// https://www.baeldung.com/java-convert-string-to-string-array
+// teisendab Stringi arrayks mis koosneb tähtedest {"a", "b", "c"}
+//String[] lettersReplacedArr = lettersReplaced.split("");
+

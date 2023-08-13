@@ -1,6 +1,7 @@
 package main;
 
 import controllers.Controller;
+import models.Database;
 import models.Model;
 import views.View;
 

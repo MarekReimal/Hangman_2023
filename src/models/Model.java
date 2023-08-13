@@ -3,6 +3,7 @@ package models;
 import models.datastructures.DataScores;
 
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +30,18 @@ public class Model {
     private String[] userWord; // Sõna mida kasutaja arvab, hoiab meeles arvatud ja arvamata tähed [m_ja]
     private ArrayList<String> quessedCorrectChars = new ArrayList<String>(); // Arvatud õiged tähed
     private ArrayList<String> quessedWrongChars = new ArrayList<String>(); // Arvatud tähed aga valed
-    private boolean mistakeQuess = false; // kas valitud täht oli õige või vale
+    private boolean quessPassed = false; // kas valitud täht oli õige või vale
     private boolean wordQuessed = false; // kas sõna on ära arvatud
+    private String playerName = "Suva"; // Küsitud mängija nimi scores jaoks
+    private String randWord = "Algne"; // Juhuslik sõna DB-st, kasutab ainult scores jaoks- vajalik Stringina
+    private String gameTime = "2023-08-15 00:00:00"; // Ajatempel scores jaoks
+    private String missedLetters = "p"; // eksitud tähed scores jaoks Stringina
+    private int timeSeconds = 46 ; // mängu kestvus scores jaoks
 
 
+
+
+    // LocalDateTime gameTime, String playerName, String word, String missedLetters, int timeSeconds)
 
 
     /**
@@ -163,7 +172,7 @@ public class Model {
     }
 
     /**
-     *
+     * Tagastab koopia juhusliku sõna massiivist
      * @return
      */
     public String[] getRandomWordArr() {
@@ -171,7 +180,21 @@ public class Model {
         //https://stackoverflow.com/questions/55428172/how-to-prevent-changing-the-value-of-array-or-object
     }
 
+    /**
+     * Meetod salvestab mängija nime
+     * @param playerName
+     */
+    public void setPlayerName(String playerName){
+        this.playerName = playerName;
+    }
 
+    /**
+     * Meetod tagastab mängija nime
+     * @return
+     */
+    public String getPlayerName(){
+        return this.playerName;
+    }
     /**
      * Meetod salvestab model muutujasse juhusliku sõna mida kasutaja hakkab arvama
      * @param randomWord
@@ -181,6 +204,7 @@ public class Model {
         this.randomWordArr = randW.split(""); // Salvestab väärtuse [] kujul, teisendab sõna String[] {"a","b","c"}
         String temp = randomWord.replaceAll(".","_"); // Asendab tähed _-ga, abi rida
         this.userWord = temp.split(""); // Salvestab väärtuse [] kujul
+        this.randWord = randomWord; // Salvestab juhusliku sõna stringina scores jaoks
     }
     public boolean isWordQuessed() {
         return wordQuessed;
@@ -188,30 +212,36 @@ public class Model {
     public void setWordQuessed(boolean state) {
         this.wordQuessed = state;
     }
-    public boolean isMistakeQuess() {
-        return mistakeQuess;
+    public boolean isQuessPassed() {
+        return quessPassed;
     }
-    public void setMistakeQuess(boolean state) {
-        this.mistakeQuess = state;
+    public void setQuessPassed(boolean state) {
+        this.quessPassed = state;
     }
 
 
     public String[] getWordToShow(String userChar) {
-        if (!isInCorrectChars(userChar)) { // JÄTKA SIIT, VAJA ENNE KONTROLLIDA ÕIGETE VALEDE HULGAST, ENNE KUI USERWOED MUUDETAKSE
-        if(isChar(userChar)) { // Kontroll kas täht on sõnas, kutsub meetodi, kaasa kasutaja täht
-            System.out.println("täht on sõnas"); // Test
-            //if(isInCorrectChars(userChar)){ // Kui täht on õige ja juba arvatud siis
-                // suurenda vigade arvu ja vaheta pilt
-                //this.mistakeQuess = true;
-            }
-        } else { // kui tähte ei ole sõnas siis
-            this.quessedWrongChars.add(userChar); // salvestab arvatud vale tähe
-            System.out.println("täht ei ole sõnas");
-            // suurenda vigade arvu ja vaheta pilt
-            this.mistakeQuess = true;
-
+        if(userChar.equals("X")){
+            this.wordQuessed = true;
+            return this.userWord;
         }
-        return this.userWord;
+        if (isChar(userChar)){ // kui täht on sõnas
+            if (isInUserWord(userChar)){ // kui täht on juba arvatud siis
+                this.quessedCorrectChars.add(userChar);
+                this.quessPassed = true; // Kontroller true
+                return this.userWord;
+            } else {
+                // Muuda userWord, asenda _ tähega
+                updateUserWord(userChar);
+                return this.userWord;
+            }
+        } else {
+            // Täht on vale
+            // Lisa vale täht quessedWrongChars
+            this.quessedWrongChars.add(userChar); // salvestab arvatud vale tähe
+            this.quessPassed = true; // Kontroller true
+            return this.userWord;
+        }
     }
 
     /**
@@ -223,49 +253,90 @@ public class Model {
     // https://stackoverflow.com/questions/8777257/equals-vs-arrays-equals-in-java
     // https://www.baeldung.com/java-array-contains-value
     private boolean isChar(String userChar) {
-
-        boolean isCh = false; // Init. muutuja
-        int x = 0; // Init. loendur
-
+        boolean isCh = false;
         for (String s : this.randomWordArr) { // Loop s on üksikud tähed, võetakse radomW... massiivist
-            //System.out.println("kõik tähed " + s); // Test
             if(userChar.equals(s)) { // Kui kasutaja sisestatud täht võrdub sõnas oleva tähega siis
-                //System.out.println("x väärtus on " + x); // Test
-                //System.out.println("loobitud täht " + s); // Test
-                this.userWord[x] = userChar; // Asendab _ sümboli kasutaja sisestatud tähega
-                // kontroll kas sõna on arvatud, kui array'd on võrdsed siis on arvatud
+                isCh = true; // Täht oli sõnas olemas
+                return isCh;
+            }
+        }
+        return isCh;
+    }
+
+    /**
+     * Meetod kontrollib kas tähte on juba arvatud.
+     * @param userChar
+     * @return
+     */
+    private boolean isInUserWord(String userChar) {
+        boolean isIn = false; // Kontrolleri väärtus
+        for (String s : this.userWord){ // Loop
+            if(s.equals(userChar)) { // Kui sõnas olev täht võrdub kasutaja tähega siis
+                isIn = true; // Kontroller true
+                return isIn;
+            }
+        }
+        return isIn;
+    }
+
+    /**
+     * Meetod kontrollib kas täht on sõnas, õige tähe korral asendab _ õige tähega.
+     * Kontrollib kas sõna on lõpuni arvatud, kui jah siis muudab kontrolleri staatust true
+     * @param userChar on kasutaja täht
+     */
+    private void updateUserWord(String userChar) {
+        for (int x=0; x<this.randomWordArr.length && ! Arrays.equals(this.userWord, this.randomWordArr); x++) {
+            String s = this.randomWordArr[x];
+            if (s.equals(userChar)) {
+                this.userWord[x] = userChar;
+                // Kontroll kas sõna on arvatud, kui array'd on võrdsed siis on arvatud
                 if (Arrays.equals(this.userWord, this.randomWordArr)) {
                     this.wordQuessed = true;
-                    break;
                 }
-                isCh = true; // Täht oli sõnas olemas
-            }
-            x++; // loendur kasvab
-        }
-        //System.out.println("käis isChar, näita userWord " + String.join("",this.userWord)); // Test
-        return isCh;
-    }
-
-    private boolean isInCorrectChars(String userChar){
-        System.out.println("näita userWord isInCorr meetodis " + Arrays.toString(this.userWord));
-        boolean isCh = false;
-        for (String s : this.userWord) {
-            if (s.equals(userChar)){
-                isCh = true;
             }
         }
-        return isCh;
-    }
-    private boolean isInWrongChars(String userChar){
-        boolean isCh = false;
-        return isCh;
     }
 
-
-    /*
-     sõna töötlemine ja arvepidamine toimub arrays
-     GUI-le sõna välja kirjutamiseks eraldi meetod- lisab tühikud tähtede vahele JOIN
+    /**
+     * Meetod vormistab valesti arvatud tähed esitatavaks stringiks
+     * @return
      */
+    public String getQuessedWrongChars() {
+        // https://www.geeksforgeeks.org/convert-an-arraylist-of-string-to-a-string-array-in-java/
+        // Vormindab Arraylist String arrayks
+        String[] temp = this.quessedWrongChars.toArray(new String[this.quessedWrongChars.size()]);
+        String tempj = String.join(",",temp); // ühendab tähed koos komadega Stringiks
+        // Vormindab esitatava Stringi
+        String wrongChars = "Wrong " + (this.quessedWrongChars.size()+this.quessedCorrectChars.size()) + " letter(s): " + tempj;
+        this.missedLetters = tempj; // Salvestab väärtuse scores tabeli jaoks
+        return wrongChars;
+    }
+
+    public String getRandWord() {
+        return randWord;
+    }
+
+    public String getGameTime() {
+        return gameTime;
+    }
+
+    public void setGameTime(String gameTime) {
+        this.gameTime = gameTime;
+    }
+
+    public String getMissedLetters() {
+        return missedLetters;
+    }
+
+    public int getTimeSeconds() {
+        return timeSeconds;
+    }
+
+    public void setTimeSeconds(int timeSeconds) {
+//        String sec = String.valueOf(timeSeconds);
+        this.timeSeconds = timeSeconds;
+    }
+
 
 }
 /*
