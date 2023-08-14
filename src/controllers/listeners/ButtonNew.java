@@ -4,6 +4,7 @@ import models.Database;
 import models.Model;
 import views.View;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -31,33 +32,39 @@ public class ButtonNew implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        view.hideNewButtons(); // Set access to buttons and text field
-        view.getRealDateTime().stop(); // "Stop" real time
-        if(!view.getGameTime().isRunning()) { // If gameTime not running
-            view.getGameTime().setSeconds(0);
-            view.getGameTime().setMinutes(0);
-            view.getGameTime().setRunning(true); // Set game running
-            view.getGameTime().startTimer(); // Start game time
-        } else { // gameTime is running
-            view.getGameTime().stopTimer(); // Stop gameTime
-            view.getGameTime().setRunning(false); // set game not running
+        // Kontroll kas katergooria on valitud
+        if(model.getSelectedCategory() == "All categories"){ // Kui ei ole siis teata
+            JOptionPane.showMessageDialog(null, "Enne alustamist vali kategooria"); // Väljasta teade
+        } else { // Kui kategooria on valitud siis
+            view.hideNewButtons(); // Set access to buttons and text field
+            view.getRealDateTime().stop(); // "Stop" real time
+            if (!view.getGameTime().isRunning()) { // If gameTime not running
+                view.getGameTime().setSeconds(0);
+                view.getGameTime().setMinutes(0);
+                view.getGameTime().setRunning(true); // Set game running
+                view.getGameTime().startTimer(); // Start game time
+            } else { // gameTime is running
+                view.getGameTime().stopTimer(); // Stop gameTime
+                view.getGameTime().setRunning(false); // set game not running
+            }
+            view.setNewImage(0);
+            model.setImageId(0);
+            view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
+            view.getLblError().setText("Wrong 0 letter(s):"); // Algväärtusta vigade info
+            model.resetGame(); // Algväärtusta uue mängu jaoks
+
+            // new Database on kirjutatud et pääseda meedotidile ligi, loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
+            // Kaasa valitud kategooria
+            new Database(model).selectRandomWord(model.getSelectedCategory());
+
+            // VALMISTAB ETTE KUVAMISEKS
+            // System.out.println(model.getRandWord()); // TEST TEST NÄITA SÕNA
+            List<String> lettersReplaced = Arrays.asList(model.getRandomWordArr());
+            Collections.fill(lettersReplaced, "_"); // Võtab sõna ja asendab kõik tähed alakriipsuga
+            String lettersReplacedSpacesAdded = String.join(" ", lettersReplaced); // Lisab tähtede vahele tühikud
+            view.getLblResult().setText(lettersReplacedSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
+
         }
-        view.setNewImage(0);
-        model.setImageId(0);
-        view.getTxtChar().requestFocus(); // After pressing New Game, the input box becomes active
-
-        // new Database on kirjutatud et pääseda meedotidile ligi, loeb DB-st juhusliku sõna mida kasutaja arvama hakkab,
-        // Kaasa valitud kategooria
-        new Database(model).selectRandomWord(model.getSelectedCategory());
-
-        // VALMISTAB ETTE KUVAMISEKS
-        List<String> lettersReplaced = Arrays.asList(model.getRandomWordArr());
-        Collections.fill(lettersReplaced,"_"); // Võtab sõna ja asendab kõik tähed alakriipsuga
-        String lettersReplacedSpacesAdded = String.join(" ",lettersReplaced); // Lisab tähtede vahele tühikud
-        view.getLblResult().setText(lettersReplacedSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
-
-
-
     }
 }
 

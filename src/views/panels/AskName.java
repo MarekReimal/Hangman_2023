@@ -8,7 +8,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// EI OLE KASUTUSEL
+/**
+ * Klass loob dialoogiakna mängija nime küsimiseks
+ * EI OLE KASUTUSEL
+ */
+
 public class AskName extends JFrame implements ActionListener {
     private JTextField txtKasutajaNimi;
     private JButton btnOk;

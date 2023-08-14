@@ -2,6 +2,7 @@ package models;
 
 import models.datastructures.DataScores;
 
+import javax.swing.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,15 +35,11 @@ public class Database {
      * @throws SQLException throws error on console.
      */
     private Connection dbConnection() throws SQLException {
-        System.out.println("tuli conn");
         // https://stackoverflow.com/questions/13891006/
         if (connection != null) { // kontrollib kas on varasem ühendus aktiivne
-            System.out.println("conn != null");
-            System.out.println(connection.toString());
             this.connection.close(); // kui jah siis sulgeb ühenduse
         }
         connection = DriverManager.getConnection(databaseUrl); // loob ühenduse, DriverMan valib õige draiveri
-        System.out.println("teeb conn");
         return connection;
     }
 
@@ -50,7 +47,6 @@ public class Database {
      * The method reads unique category names from the database and writes them to the cmbNames variable of the model.
      */
     public void selectUniqueCategories() {
-        System.out.println("teeb selectuniquecatecories");
         // sql päring muutujasse
         String sql = "SELECT DISTINCT(category) as category FROM words ORDER BY category"; // päring võtab unikaalsed read
         // list muutuja katekoorijatele
@@ -82,7 +78,6 @@ public class Database {
      * variable
      */
     public void selectScores() {
-        System.out.println("teeb selectScores");
         String sql = "SELECT * FROM scores ORDER BY gametime, playertime DESC, playername";
         List<DataScores> data = new ArrayList<>();
         try {
@@ -92,7 +87,6 @@ public class Database {
             model.getDataScores().clear();
             while (rs.next()) {
                 String datetime = rs.getString("playertime");
-                System.out.println(datetime);
                 LocalDateTime playerTime = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 String playerName = rs.getString("playername");
                 String guessWord = rs.getString("guessword");
@@ -120,7 +114,6 @@ public class Database {
      * väljund on String mis kirjutatakse modeli muutujasse
      */
     public void selectRandomWord(String choosedCatecory) {
-        System.out.println("teeb selectRandomWord");
         // Päring: üks juhuslik sõna vastavalt kategooriale
         String sql = "SELECT word FROM words WHERE category = ? ORDER BY random() limit 1";
         try {

@@ -26,6 +26,7 @@ public class ButtonCancel implements ActionListener {
         view.getGameTime().setRunning(false); // set game not running
 
         view.getRealDateTime().start(); // Start real time again
+        view.getLblResult().setText("L E T ' S  P L A Y");
 
     }
 }

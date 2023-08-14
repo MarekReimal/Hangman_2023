@@ -81,6 +81,10 @@ public class View extends JFrame {
                                                     // kaasa actionhandler
     }
 
+    /**
+     * Meetod lisab ActionListener numule Send
+     * @param al
+     */
     public void registerButtonSend(ActionListener al){ // sisendiks ButtonSend obj koodiga mis täidetakse nupu vajutamisel
         gameBoard.getBtnSend().addActionListener(al); // lingib vaormilt saadud nupu kuulaja ja vajutamisel täidetava koodiga
     }
@@ -214,6 +218,9 @@ public class View extends JFrame {
     public JLabel getLblError() {
         return gameBoard.getLblError();
     }
+    public JComboBox getCmbCategory() {
+        return gameBoard.getCmbCategory();
+    }
 
     /**
      * Meetod mis käivitab dialoogiakna mängija nime küsimiseks
@@ -223,4 +230,11 @@ public class View extends JFrame {
         askName.setVisible(true);
     }
 
+    /**
+     * Meetod algväärtustab kategooria ja vigade info
+     */
+    public void resetGame() {
+        this.getCmbCategory().setSelectedIndex(0); // Kategooriad vaikimisi väärtuseks
+        this.getLblError().setText("Wrong 0 letter(s):");
+    }
 }

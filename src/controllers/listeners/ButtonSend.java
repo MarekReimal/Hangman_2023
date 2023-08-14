@@ -27,7 +27,7 @@ public class ButtonSend implements ActionListener {
      */
     public void actionPerformed(ActionEvent EventBtnSendPressed) {
         //  Võtab kasutaja sisestatud tähe ja vahetab trükitäheks
-        String userChar = this.view.getTxtChar().getText().toUpperCase();
+        String userChar = view.getTxtChar().getText().toUpperCase();
         if (!userChar.trim().isEmpty()) { // Lõikab tühikud, kui ei ole tühi siis ...
 
             // Võtab ettevalmistatud sõna mida kuvada graafikal,
@@ -40,7 +40,8 @@ public class ButtonSend implements ActionListener {
                 view.getGameTime().setRunning(false); // set game not running
                 view.getRealDateTime().start(); // Start real time again
                 model.setWordQuessed(false); // Taastab kontrolleri väärtuse, et saaks uut mängu käivitada
-                String n = JOptionPane.showInputDialog("Sisesta nimi"); // Inputbox
+                String n = JOptionPane.showInputDialog("Sisesta nimi"); // Inputbox, https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+                if(n == null || n.isEmpty()){n = "Tundmatu"; }
                 model.setPlayerName(n); // Paneb mängija nime muutujasse
                 // Loob ajatempli
                 String strTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -48,6 +49,7 @@ public class ButtonSend implements ActionListener {
                 model.setTimeSeconds(view.getGameTime().getPlayedTimeInSeconds()); // Salvestab mängu kestvuse socores jaoks
                 new Database(model).insertScores();
             }
+
             // KONTROLL KAS ARVATI VALESTI
             if (model.isQuessPassed()) { // Kui on true st arvati valesti siis
                 model.setImageId(model.getImageId()+1); // Pildi ID muudetakse
@@ -55,6 +57,7 @@ public class ButtonSend implements ActionListener {
                 view.getLblError().setText(model.getQuessedWrongChars()); // Kuvab vigade arvu ja valed tähed
                 model.setQuessPassed(false); // Taasta kontrolleri väärtus
             }
+
             // KONTROLL KAS MÄNG ON LÄBI
             if(model.getImageId() == 11) { // Kui on viimane pilt ehk poodud siis
                 view.showNewButton(); // Set access to buttons and text field
@@ -63,7 +66,9 @@ public class ButtonSend implements ActionListener {
                 view.getRealDateTime().start(); // Start real time again
                 model.setWordQuessed(false); // Taastab kontrolleri väärtuse, et saaks uut mängu käivitada
                 view.getLblResult().setText("L E T ' S  P L A Y"); // GUI label saab väärtuse ja näidatakse graafiliselt
+                resetGame(); // Algväärtusta
             }
+
             // KUVAMISE OSA
             if(model.getImageId() == 11) { // Kui on viimane pilt ehk poodud, siis mäng läbi ja tekst lets play
                 view.getLblResult().setText("L E T ' S  P L A Y"); // GUI label saab väärtuse ja näidatakse graafiliselt
@@ -71,7 +76,14 @@ public class ButtonSend implements ActionListener {
                 String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
                 view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
             }
-
         }
+        view.getTxtChar().setText(""); // Tühjenda sisestusväli
+        view.getTxtChar().requestFocus(); // Pane kursor sisestuskasti
+    }
+
+    private void resetGame(){
+        view.getCmbCategory().setSelectedIndex(0); // Kategooriad vaikimisi väärtuseks
+        view.getLblError().setText("Wrong 0 letter(s):");
+        model.resetGame(); // Algväärtusta uue mängu jaoks
     }
 }

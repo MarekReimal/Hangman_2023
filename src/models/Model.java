@@ -17,7 +17,7 @@ public class Model {
     hangman_words_en.db - English words, the leaderboard table is empty
     hangman_words_ee_test.db - Estonian words, the leaderboard table is NOT empty
      */
-    private final String databaseFile = "hangman_words_ee_test.db"; // Default database
+    private final String databaseFile = "hangman_words_ee.db"; // "hangman_words_ee_test.db"; // Default database
     private final String imagesFolder = "images"; // Hangman game images location
     private List<String> imageFiles = new ArrayList<>(); // All images with full folder path
     private String[] cmbNames; // Array muutuja ComboBox categories names (contents)
@@ -32,10 +32,10 @@ public class Model {
     private ArrayList<String> quessedWrongChars = new ArrayList<String>(); // Arvatud tähed aga valed
     private boolean quessPassed = false; // kas valitud täht oli õige või vale
     private boolean wordQuessed = false; // kas sõna on ära arvatud
-    private String playerName = "Suva"; // Küsitud mängija nimi scores jaoks
-    private String randWord = "Algne"; // Juhuslik sõna DB-st, kasutab ainult scores jaoks- vajalik Stringina
+    private String playerName = "Tühi"; // Küsitud mängija nimi scores jaoks
+    private String randWord = "Puudub"; // Juhuslik sõna DB-st, kasutab ainult scores jaoks- vajalik Stringina
     private String gameTime = "2023-08-15 00:00:00"; // Ajatempel scores jaoks
-    private String missedLetters = "p"; // eksitud tähed scores jaoks Stringina
+    private String missedLetters = "p,u,u,d,u,b"; // eksitud tähed scores jaoks Stringina
     private int timeSeconds = 46 ; // mängu kestvus scores jaoks
 
 
@@ -206,47 +206,72 @@ public class Model {
         this.userWord = temp.split(""); // Salvestab väärtuse [] kujul
         this.randWord = randomWord; // Salvestab juhusliku sõna stringina scores jaoks
     }
+
+    /**
+     * Meetod tagastab true/false, kas sõna on arvatud või mitte
+     * @return
+     */
     public boolean isWordQuessed() {
         return wordQuessed;
     }
+
+    /**
+     * Meetod salvestab tunnuse, kas sõna on arvatud või mitte
+     * @param state
+     */
     public void setWordQuessed(boolean state) {
         this.wordQuessed = state;
     }
+
+    /**
+     * Meetod tagastab true/false, kas arvati õigesti või valesti
+     * @return
+     */
     public boolean isQuessPassed() {
         return quessPassed;
     }
+
+    /**
+     * Meetod salvestab tunnuse, kas arvati õigesti või valesti
+     * @param state
+     */
     public void setQuessPassed(boolean state) {
         this.quessPassed = state;
     }
 
-
+    /**
+     * Meetod analüüsib, kas sisestatud täht on õige või vale
+     * @param userChar
+     * @return Tagastab sõna milles õigesti arvatud tähed on näha
+     */
     public String[] getWordToShow(String userChar) {
+       // TAGAUKS KIIRELT ÕIGE SÕNAGA LÕPETAMISEKS
         if(userChar.equals("X")){
             this.wordQuessed = true;
             return this.userWord;
         }
-        if (isChar(userChar)){ // kui täht on sõnas
-            if (isInUserWord(userChar)){ // kui täht on juba arvatud siis
+        // KONTROLL KAS TÄHT ON SÕNAS
+        if (isChar(userChar)){ // Kas täht on sõnas
+
+            // KONTROLL KAS ON JUBA ARVATUD ÕIGE
+            if (isInUserWord(userChar)){ // Kas täht on juba arvatud õige siis
                 this.quessedCorrectChars.add(userChar);
-                this.quessPassed = true; // Kontroller true
+                this.quessPassed = true; // Arvati valesti, kontroller true
                 return this.userWord;
-            } else {
+            } else { // KUI TÄHT ON ÕIGE SIIS
                 // Muuda userWord, asenda _ tähega
                 updateUserWord(userChar);
                 return this.userWord;
             }
-        } else {
-            // Täht on vale
+        } else { // KUI TÄHT ON VALE SIIS
             // Lisa vale täht quessedWrongChars
             this.quessedWrongChars.add(userChar); // salvestab arvatud vale tähe
             this.quessPassed = true; // Kontroller true
             return this.userWord;
         }
     }
-
     /**
-     * Meetod kontrollib kas täht on sõnas, õige tähe korral asendab _ õige tähega.
-     * Kontrollib kas sõna on lõpuni arvatud, kui jah siis muudab kontrolleri staatust true
+     * Meetod kontrollib kas täht on sõnas.
      * @param userChar On kasutaja sisestatud täht
      * @return Tagastab bbblean kas täht oli või mitte
      */
@@ -264,7 +289,7 @@ public class Model {
     }
 
     /**
-     * Meetod kontrollib kas tähte on juba arvatud.
+     * Meetod kontrollib kas tähte on juba arvatud õige.
      * @param userChar
      * @return
      */
@@ -285,13 +310,14 @@ public class Model {
      * @param userChar on kasutaja täht
      */
     private void updateUserWord(String userChar) {
+        // Loop kuni on tähti sõnas ja sõna ei ole ära arvatud (võrdleb kahte massiivi)
         for (int x=0; x<this.randomWordArr.length && ! Arrays.equals(this.userWord, this.randomWordArr); x++) {
-            String s = this.randomWordArr[x];
-            if (s.equals(userChar)) {
-                this.userWord[x] = userChar;
+            String s = this.randomWordArr[x]; // Võtab sõnast tähe
+            if (s.equals(userChar)) { // Võrdle kasutaja tähte sõnas oleva tähega, kui täht on sõnas siis
+                this.userWord[x] = userChar; // Asenda _ tähega
                 // Kontroll kas sõna on arvatud, kui array'd on võrdsed siis on arvatud
                 if (Arrays.equals(this.userWord, this.randomWordArr)) {
-                    this.wordQuessed = true;
+                    this.wordQuessed = true; // Väärtusta kontroller
                 }
             }
         }
@@ -312,29 +338,62 @@ public class Model {
         return wrongChars;
     }
 
+    /**
+     * Meetod tagastab DB-st saadud juhusliku sõna
+     * @return
+     */
     public String getRandWord() {
         return randWord;
     }
 
+    /**
+     * Meetod tagastab ajatempli millal mängiti, scores jaoks
+     * @return
+     */
     public String getGameTime() {
         return gameTime;
     }
 
+    /**
+     * Meetod salvestab ajatempli millal mängiti, scores jaoks
+     * @param gameTime
+     */
     public void setGameTime(String gameTime) {
         this.gameTime = gameTime;
     }
 
+    /**
+     * Meetod tagastab valesti arvatud tähed
+     * @return
+     */
     public String getMissedLetters() {
         return missedLetters;
     }
 
+    /**
+     * Meetod tagastab aja kui kaua mängiti / arvati
+     * @return
+     */
     public int getTimeSeconds() {
         return timeSeconds;
     }
 
+    /**
+     * Meetod salvestab aja kui kaua mängiti / arvati
+     * @param timeSeconds
+     */
     public void setTimeSeconds(int timeSeconds) {
 //        String sec = String.valueOf(timeSeconds);
         this.timeSeconds = timeSeconds;
+    }
+
+    /**
+     * Meetod algväärtustab muutujad uue mängu jaoks
+     */
+    public void resetGame() {
+        this.missedLetters = ""; // Kustuta valed tähed
+        this.quessedWrongChars.clear(); // Kustuta valed tähed
+        this.quessedCorrectChars.clear(); // Kustuta õiged valed tähed
     }
 
 
@@ -362,8 +421,6 @@ public class StringArrayExample {
 
 https://www.tutorialspoint.com/fill-elements-in-a-java-char-array-in-a-specified-range
 erinevad näited stringi ja char[]
-
-
 
 public class Test {
     public static void main(String[] args) {
