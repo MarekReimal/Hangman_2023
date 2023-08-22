@@ -5,6 +5,7 @@ import models.Model;
 import views.View;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
@@ -54,6 +55,7 @@ public class ButtonSend implements ActionListener {
             if (model.isQuessPassed()) { // Kui on true st arvati valesti siis
                 model.setImageId(model.getImageId()+1); // Pildi ID muudetakse
                 view.setNewImage(model.getImageId());// Vaheta pilt
+                view.getLblError().setForeground(Color.RED); // Vigade info teksti värvus punane
                 view.getLblError().setText(model.getQuessedWrongChars()); // Kuvab vigade arvu ja valed tähed
                 model.setQuessPassed(false); // Taasta kontrolleri väärtus
             }
@@ -81,6 +83,9 @@ public class ButtonSend implements ActionListener {
         view.getTxtChar().requestFocus(); // Pane kursor sisestuskasti
     }
 
+    /**
+     * Meetod algväärtustab muutujad uue mängu jaoks
+     */
     private void resetGame(){
         view.getCmbCategory().setSelectedIndex(0); // Kategooriad vaikimisi väärtuseks
         view.getLblError().setText("Wrong 0 letter(s):");

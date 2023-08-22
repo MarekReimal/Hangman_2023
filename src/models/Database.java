@@ -115,11 +115,18 @@ public class Database {
      */
     public void selectRandomWord(String choosedCatecory) {
         // Päring: üks juhuslik sõna vastavalt kategooriale
-        String sql = "SELECT word FROM words WHERE category = ? ORDER BY random() limit 1";
+        String sql = "SELECT word FROM words WHERE category LIKE ? ORDER BY random() limit 1";
         try {
             Connection conn = this.dbConnection(); // Loob DB ühenduse
             PreparedStatement getWord = conn.prepareStatement(sql); // Prepeared päring, päring sisaldab muutuvat osa ?
-            getWord.setString(1, choosedCatecory); // Päringu muutuv osa saab väärtuseks valitud kategooria
+            // Päringu muutuv osa, kategooria saab väärtuse
+            // KONTROLL KAS KATEGOORIA ON VALITUD https://intellipaat.com/community/38986/using-like-wildcard-in-prepared-statement
+                                                // https://alvinalexander.com/blog/post/jdbc/jdbc-preparedstatement-select-like/
+            if(choosedCatecory == "All categories"){ // Kui ei ole siis
+                getWord.setString(1,"%"); // valib juhusliku sõna kõigi kategooriate hulgast
+            } else { // kui on valitud
+                getWord.setString(1,"%" + choosedCatecory + "%"); // valib kindla kategooria hulgast
+            }
             ResultSet rs = getWord.executeQuery(); // ResultSet on nö tabel mis sisaldab päringu tulemust
             String rWord = rs.getString(1); // Päringu tulemuseks on 1 sõna, split vormindab []-ks
             model.setRandomWord(rWord); // Kirjutab saadud juhusliku sõna modeli muutujasse
