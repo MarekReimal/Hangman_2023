@@ -58,7 +58,7 @@ public class ButtonNew implements ActionListener {
         new Database(model).selectRandomWord(model.getSelectedCategory());
 
         // VALMISTAB ETTE KUVAMISEKS
-         System.out.println(model.getRandWord()); // TEST TEST NÄITA SÕNA
+        // System.out.println(model.getRandWord()); // TEST TEST NÄITA SÕNA
         List<String> lettersReplaced = Arrays.asList(model.getRandomWordArr());
         Collections.fill(lettersReplaced, "_"); // Võtab sõna ja asendab kõik tähed alakriipsuga
         String lettersReplacedSpacesAdded = String.join(" ", lettersReplaced); // Lisab tähtede vahele tühikud
