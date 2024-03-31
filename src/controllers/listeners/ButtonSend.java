@@ -34,6 +34,9 @@ public class ButtonSend implements ActionListener {
             // Võtab ettevalmistatud sõna mida kuvada graafikal,
             String[] wordReadyToShow = model.getWordToShow(userChar);
 
+            String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
+            view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
+
             // KONTROLL KAS SÕNA ON ÄRA ARVATUD, kui jah, siis peatab aja jne
             if (model.isWordQuessed()) {
                 view.showNewButton(); // Set access to buttons and text field
@@ -41,10 +44,10 @@ public class ButtonSend implements ActionListener {
                 view.getGameTime().setRunning(false); // set game not running
                 view.getRealDateTime().start(); // Start real time again
                 model.setWordQuessed(false); // Taastab kontrolleri väärtuse, et saaks uut mängu käivitada
-                String n = JOptionPane.showInputDialog("Sisesta nimi"); // Inputbox, https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+                String n = JOptionPane.showInputDialog(null,"Please write your name!","Leaderboard data",JOptionPane.INFORMATION_MESSAGE); // Inputbox, https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
                 if(n == null || n.isEmpty()){n = "Tundmatu"; }
                 model.setPlayerName(n); // Paneb mängija nime muutujasse
-                // Loob ajatempli
+                // Loob ajatempli4
                 String strTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 model.setGameTime(strTime); // Salvestab ajatempli scores jaoks
                 model.setTimeSeconds(view.getGameTime().getPlayedTimeInSeconds()); // Salvestab mängu kestvuse socores jaoks
@@ -72,12 +75,12 @@ public class ButtonSend implements ActionListener {
             }
 
             // KUVAMISE OSA
-            if(model.getImageId() == 11) { // Kui on viimane pilt ehk poodud, siis mäng läbi ja tekst lets play
-                view.getLblResult().setText("L E T ' S  P L A Y"); // GUI label saab väärtuse ja näidatakse graafiliselt
-            } else { // Kuvab sõna mida kasutaja arvab
-                String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
-                view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
-            }
+//            if(model.getImageId() == 11) { // Kui on viimane pilt ehk poodud, siis mäng läbi ja tekst lets play
+//                view.getLblResult().setText("L E T ' S  P L A Y"); // GUI label saab väärtuse ja näidatakse graafiliselt
+//            } else { // Kuvab sõna mida kasutaja arvab
+//                String wordReadyToShowSpacesAdded = String.join(" ",wordReadyToShow); // Lisab tähtede vahele tühikud
+//                view.getLblResult().setText(wordReadyToShowSpacesAdded); // GUI label saab väärtuse ja näidatakse graafiliselt
+//            }
         }
         view.getTxtChar().setText(""); // Tühjenda sisestusväli
         view.getTxtChar().requestFocus(); // Pane kursor sisestuskasti
